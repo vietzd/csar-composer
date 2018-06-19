@@ -1,4 +1,4 @@
-package org.opentosca.composer.population;
+package org.opentosca.csarcomposer.population;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 

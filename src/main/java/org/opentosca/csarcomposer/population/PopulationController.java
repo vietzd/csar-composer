@@ -1,4 +1,4 @@
-package org.opentosca.composer.population;
+package org.opentosca.csarcomposer.population;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
