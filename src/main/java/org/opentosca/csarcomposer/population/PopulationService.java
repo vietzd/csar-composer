@@ -20,7 +20,6 @@ public class PopulationService {
         SortedSet<ServiceTemplateId> allDefinitionsChildIds = sourceRepository.getAllDefinitionsChildIds(ServiceTemplateId.class);
 
         for (ServiceTemplateId serviceTemplateId : allDefinitionsChildIds) {
-
             result.add(new CSAR(serviceTemplateId));
         }
 
