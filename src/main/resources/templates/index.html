@@ -6,13 +6,17 @@
 <body>
     <div>
         <h1>Source Repo</h1>
-        <div th:each="sourceTemplateId : ${sourceServiceTemplateIds}">
-            <p th:text="${sourceTemplateId}"/>
+        <div th:each="sourceCsar : ${sourceCsars}">
+            <p th:text="${sourceCsar}"/>
             <input type="button" value="Add"/>
         </div>
     </div>
     <div>
         <h1>Internal Repo</h1>
+        <div th:each="internalCsar : ${internalCsars}">
+            <p th:text="${internalCsar}"/>
+            <input type="button" value="Remove"/>
+        </div>
     </div>
 </body>
 </html>
