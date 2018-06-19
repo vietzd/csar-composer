@@ -16,7 +16,7 @@ public class PopulationService {
     private IRepository sourceRepository = RepositoryFactory.getRepository();
     private List<CSAR> internalRepository = new ArrayList<>();
 
-    public List<CSAR> getAllSourceCsars() {
+    List<CSAR> getAllSourceCsars() {
         List<CSAR> result = new ArrayList<>();
         SortedSet<ServiceTemplateId> allDefinitionsChildIds = sourceRepository.getAllDefinitionsChildIds(ServiceTemplateId.class);
 
@@ -27,7 +27,16 @@ public class PopulationService {
         return result;
     }
 
-    public List<CSAR> getAllInternalCsars() {
+    List<CSAR> getAllInternalCsars() {
         return internalRepository;
+    }
+
+    void copyCsarFromSourceToInternal(CSAR csar) {
+        //TODO
+    }
+
+    CSAR getCsar(ServiceTemplateId id) {
+        // TODO
+        return new CSAR(id);
     }
 }
