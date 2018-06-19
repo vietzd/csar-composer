@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -34,8 +35,9 @@ public class PopulationController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/internalCsars")
-    public void copyCsarFromSourceToInternal(@RequestBody CSAR csar) {
-        populationService.copyCsarFromSourceToInternal(csar);
+    public void copyCsarFromSourceToInternal(HttpServletRequest request) {
+        System.out.println("CSAR-ID: " + request.getParameter("csarId"));
+//        populationService.copyCsarFromSourceToInternal(csar);
     }
 
     @RequestMapping("/sourceCsars/{id}")

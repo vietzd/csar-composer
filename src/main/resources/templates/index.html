@@ -2,13 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 <body>
+    <iframe name="hidden_frame" class="hide"></iframe>
     <div>
         <h1>Source Repo</h1>
         <div th:each="sourceCsar : ${sourceCsars}">
-            <p th:text="${sourceCsar}"/>
-            <input type="button" value="Add"/>
+            <form action="#" th:action="@{/internalCsars}" method="post" target="hidden_frame">
+                <input type="text" name="csarId" th:value="${sourceCsar}">
+                <button type="submit">Add</button>
+            </form>
         </div>
     </div>
     <div>
