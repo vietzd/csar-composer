@@ -11,15 +11,13 @@ import org.springframework.web.servlet.ModelAndView;
 public class PopulationController {
 
     @Autowired
-    private InternalCsarRestController internalCsarRestController;
-    @Autowired
-    private SourceCsarRestController sourceCsarRestController;
+    PopulationService populationService;
 
     @GetMapping("/")
     public ModelAndView getRepositories() {
         ModelAndView mv = new ModelAndView("index");
-        mv.addObject("sourceCsars", sourceCsarRestController.getSourceCsars());
-        mv.addObject("internalCsars", internalCsarRestController.getInternalCsars());
+        mv.addObject("sourceCsars", populationService.getAllSourceCsars());
+        mv.addObject("internalCsars", populationService.getAllInternalCsars());
         return mv;
     }
 }
