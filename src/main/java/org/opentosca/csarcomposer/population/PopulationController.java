@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@RestController
+@Controller
 public class PopulationController {
 
     @Autowired
@@ -34,10 +34,11 @@ public class PopulationController {
         return populationService.getAllInternalCsars();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/internalCsars")
-    public void copyCsarFromSourceToInternal(HttpServletRequest request) {
+    @PostMapping("/internalCsars")
+    public String copyCsarFromSourceToInternal(HttpServletRequest request) {
         System.out.println("CSAR-ID: " + request.getParameter("csarId"));
 //        populationService.copyCsarFromSourceToInternal(csar);
+        return "redirect:/";
     }
 
     @RequestMapping("/sourceCsars/{id}")
