@@ -26,19 +26,19 @@ public class PopulationService {
         }
     }
 
-    List<CSAR> getAllSourceCsars() {
+    public List<CSAR> getAllSourceCsars() {
         return sourceRepository;
     }
 
-    List<CSAR> getAllInternalCsars() {
+    public List<CSAR> getAllInternalCsars() {
         return internalRepository;
     }
 
-    void addToInternal(String csar) {
+    public void addToInternal(String csar) {
         internalRepository.add(sourceRepository.get(Integer.parseInt(csar)));
     }
 
-    void removeFromInternal(String csar) {
+    public void removeFromInternal(String csar) {
         internalRepository.remove(sourceRepository.get(Integer.parseInt(csar)));
     }
 

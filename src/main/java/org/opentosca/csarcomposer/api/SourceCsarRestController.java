@@ -1,5 +1,7 @@
-package org.opentosca.csarcomposer.population;
+package org.opentosca.csarcomposer.api;
 
+import org.opentosca.csarcomposer.population.CSAR;
+import org.opentosca.csarcomposer.population.PopulationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +13,7 @@ public class SourceCsarRestController {
     @Autowired
     PopulationService populationService;
 
-    @GetMapping("/source-csars")
+    @GetMapping("/api/source-csars")
     public List<CSAR> getSourceCsars() {
         return populationService.getAllSourceCsars();
     }
