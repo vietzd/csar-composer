@@ -2,8 +2,10 @@ function removeFromInternal(id) {
     var url = "http://localhost:8080/api/internal-csars/" + id;
     var xhr = new XMLHttpRequest();
     xhr.open("DELETE", url, true);
+    xhr.onload = function () {
+        location.reload();
+    };
     xhr.send(null);
-    location.reload();
 }
 
 function addToInternal(sourceId) {
@@ -12,7 +14,9 @@ function addToInternal(sourceId) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", url, true);
     xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+    xhr.onload = function () {
+        location.reload();
+    };
     xhr.send(null);
     // xhr.send(json);
-    location.reload();
 }
