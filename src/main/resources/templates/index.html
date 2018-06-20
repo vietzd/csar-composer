@@ -2,27 +2,54 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
 </head>
 <body>
     <div>
         <h1>Source Repo</h1>
-        <div th:each="sourceCsar : ${sourceCsars}">
-            <form action="#" th:action="@{/add}" method="post">
-                <label th:text="${sourceCsar}"></label><input class="hide" type="text" name="csarId" th:value="${sourceCsar.id}">
-                <button type="submit">Add</button>
-            </form>
+
+        <div class="list-group">
+            <div th:each="sourceCsar : ${sourceCsars}">
+                <a href="#" class="list-group-item">
+                    <h4 class="list-group-item-heading" th:text="'CSAR ' + ${sourceCsar.id}"></h4>
+                    <p class="list-group-item-text" th:text="${sourceCsar.serviceTemplateId}"></p>
+                    <form action="#" th:action="@{/add}" method="post">
+                        <input class="hide" type="text" name="csarId" th:value="${sourceCsar.id}">
+                        <button class="btn btn-primary" type="submit">Add</button>
+                    </form>
+                </a>
+            </div>
         </div>
     </div>
+
     <div>
         <h1>Internal Repo</h1>
-        <div th:each="internalCsar : ${internalCsars}">
-            <form action="#" th:action="@{/remove}" method="post">
-                <label th:text="${internalCsar}"></label><input class="hide" type="text" name="csarId" th:value="${internalCsar.id}">
-                <button type="submit">Remove</button>
-            </form>
+        <div class="list-group">
+            <div th:each="internalCsar : ${internalCsars}">
+                <a href="#" class="list-group-item">
+                    <h4 class="list-group-item-heading" th:text="'CSAR ' + ${internalCsar.id}"></h4>
+                    <p class="list-group-item-text" th:text="${internalCsar.serviceTemplateId}"></p>
+                    <form action="#" th:action="@{/remove}" method="post">
+                        <input class="hide" type="text" name="csarId" th:value="${internalCsar.id}">
+                        <button class="btn btn-primary" type="submit">Remove</button>
+                    </form>
+                </a>
+            </div>
         </div>
     </div>
+
+    <button class="btn btn-primary">Run</button>
+    <button class="btn btn-dark">Generate Big CSAR</button>
+
+
 </body>
 </html>
