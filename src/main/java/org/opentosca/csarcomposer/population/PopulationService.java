@@ -41,4 +41,13 @@ public class PopulationService {
     void removeFromInternal(String csar) {
         internalRepository.remove(sourceRepository.get(Integer.parseInt(csar)));
     }
+
+    public void addToInternal(CSAR c) {
+        internalRepository.add(c);
+    }
+
+    public CSAR findInternalCsar(String id) {
+
+        return internalRepository.get(0);
+    }
 }
