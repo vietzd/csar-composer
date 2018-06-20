@@ -34,12 +34,11 @@ public class PopulationService {
         return internalRepository;
     }
 
-    void copyCsarFromSourceToInternal(String csar) {
+    void addToInternal(String csar) {
         internalRepository.add(sourceRepository.get(Integer.parseInt(csar)));
     }
 
-    CSAR getCsar(ServiceTemplateId id) {
-        // TODO
-        return new CSAR(id);
+    void removeFromInternal(String csar) {
+        internalRepository.remove(sourceRepository.get(Integer.parseInt(csar)));
     }
 }
