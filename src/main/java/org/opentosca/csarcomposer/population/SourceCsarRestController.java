@@ -11,7 +11,7 @@ public class SourceCsarRestController {
     @Autowired
     PopulationService populationService;
 
-    @GetMapping("/sourceCsars")
+    @GetMapping("/source-csars")
     public List<CSAR> getSourceCsars() {
         return populationService.getAllSourceCsars();
     }

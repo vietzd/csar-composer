@@ -1,6 +1,7 @@
 package org.opentosca.csarcomposer.population;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,30 +13,23 @@ public class InternalCsarRestController {
     @Autowired
     PopulationService populationService;
 
-    @GetMapping("/internalCsars")
+    @GetMapping("/internal-csars")
     public List<CSAR> getInternalCsars() {
         return populationService.getAllInternalCsars();
     }
 
-    @PostMapping("/internalCsars")
-    public void addToInternal(HttpServletRequest request) {
-        populationService.addToInternal(request.getParameter("csarId"));
+    @PostMapping("/internal-csars/add-from-source/{sourceId}")
+    public void addToInternal(@PathVariable final String sourceId) {
+        populationService.addToInternal(sourceId);
     }
 
-    @GetMapping("/internalCsars/{id}")
+    @GetMapping("/internal-csars/{id}")
     public CSAR findInternalCsar(@PathVariable final String id) {
         return populationService.findInternalCsar(id);
     }
 
-    @DeleteMapping(value = "/internalCsars/{id}")
-    @ResponseBody
+    @DeleteMapping(value = "/internal-csars/{id}")
     public void remove(@PathVariable final String id) {
         populationService.removeFromInternal(id);
     }
-
-    @PostMapping("/remove")
-    public void remove(HttpServletRequest request) {
-        populationService.removeFromInternal(request.getParameter("csarId"));
-    }
-
 }
