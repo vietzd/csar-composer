@@ -34,10 +34,10 @@ public class PopulationController {
         return populationService.getAllInternalCsars();
     }
 
-    @PostMapping("/internalCsars")
+    @PostMapping("/add")
     public String copyCsarFromSourceToInternal(HttpServletRequest request) {
-        System.out.println("CSAR-ID: " + request.getParameter("csarId"));
-//        populationService.copyCsarFromSourceToInternal(csar);
+        System.out.println("Add Csar: " + request.getParameter("csarId"));
+        populationService.copyCsarFromSourceToInternal(request.getParameter("csarId"));
         return "redirect:/";
     }
 

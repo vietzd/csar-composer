@@ -9,8 +9,8 @@
     <div>
         <h1>Source Repo</h1>
         <div th:each="sourceCsar : ${sourceCsars}">
-            <form action="#" th:action="@{/internalCsars}" method="post">
-                <input type="text" name="csarId" th:value="${sourceCsar}">
+            <form action="#" th:action="@{/add}" method="post">
+                <label th:text="${sourceCsar}"></label><input class="hide" type="text" name="csarId" th:value="${sourceCsar.id}">
                 <button type="submit">Add</button>
             </form>
         </div>
@@ -18,8 +18,10 @@
     <div>
         <h1>Internal Repo</h1>
         <div th:each="internalCsar : ${internalCsars}">
-            <p th:text="${internalCsar}"/>
-            <input type="button" value="Remove"/>
+            <form action="#" th:action="@{/remove}" method="post">
+                <label th:text="${internalCsar}"></label><input class="hide" type="text" name="csarId" th:value="${internalCsar.id}">
+                <button type="submit">Remove</button>
+            </form>
         </div>
     </div>
 </body>

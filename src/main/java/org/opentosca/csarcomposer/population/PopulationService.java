@@ -13,26 +13,29 @@ import java.util.SortedSet;
 public class PopulationService {
 
 
-    private IRepository sourceRepository = RepositoryFactory.getRepository();
+
+    private List<CSAR> sourceRepository = new ArrayList<>();
     private List<CSAR> internalRepository = new ArrayList<>();
 
-    List<CSAR> getAllSourceCsars() {
-        List<CSAR> result = new ArrayList<>();
-        SortedSet<ServiceTemplateId> allDefinitionsChildIds = sourceRepository.getAllDefinitionsChildIds(ServiceTemplateId.class);
+    public PopulationService() {
+        IRepository repo = RepositoryFactory.getRepository();
+        SortedSet<ServiceTemplateId> allDefinitionsChildIds = repo.getAllDefinitionsChildIds(ServiceTemplateId.class);
 
         for (ServiceTemplateId serviceTemplateId : allDefinitionsChildIds) {
-            result.add(new CSAR(serviceTemplateId));
+            sourceRepository.add(new CSAR(serviceTemplateId));
         }
+    }
 
-        return result;
+    List<CSAR> getAllSourceCsars() {
+        return sourceRepository;
     }
 
     List<CSAR> getAllInternalCsars() {
         return internalRepository;
     }
 
-    void copyCsarFromSourceToInternal(CSAR csar) {
-        //TODO
+    void copyCsarFromSourceToInternal(String csar) {
+        internalRepository.add(sourceRepository.get(Integer.parseInt(csar)));
     }
 
     CSAR getCsar(ServiceTemplateId id) {
