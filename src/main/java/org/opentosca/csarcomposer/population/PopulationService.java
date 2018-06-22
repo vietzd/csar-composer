@@ -3,6 +3,8 @@ package org.opentosca.csarcomposer.population;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.opentosca.csarcomposer.sorting.SortingService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,7 +14,8 @@ import java.util.SortedSet;
 @Service
 public class PopulationService {
 
-
+    @Autowired
+    SortingService sortingService;
 
     private List<CSAR> sourceRepository = new ArrayList<>();
     private List<CSAR> internalRepository = new ArrayList<>();
@@ -36,6 +39,7 @@ public class PopulationService {
 
     public void addToInternal(String csar) {
         internalRepository.add(sourceRepository.get(Integer.parseInt(csar)));
+        internalRepository = sortingService.sort(internalRepository);
     }
 
     public void removeFromInternal(String csar) {
