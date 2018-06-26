@@ -10,9 +10,7 @@ import org.opentosca.csarcomposer.sorting.SortingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -40,10 +38,22 @@ public class PopulationService {
     }
 
     public List<CSAR> getAllSourceCsars() {
+        return sourceRepository;
+    }
+
+    public List<CSAR> getCompatibleSourceCsars() {
         if (filter == null) {
             return sourceRepository;
         } else {
             return sourceRepository.stream().filter(this.filter).collect(Collectors.toList());
+        }
+    }
+
+    public List<CSAR> getIncompatibleSourceCsars() {
+        if (filter == null) {
+            return null;
+        } else {
+            return sourceRepository.stream().filter(this.filter.negate()).collect(Collectors.toList());
         }
     }
 

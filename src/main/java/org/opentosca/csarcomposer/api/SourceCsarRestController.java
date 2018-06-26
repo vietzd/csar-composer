@@ -15,7 +15,17 @@ public class SourceCsarRestController {
     PopulationService populationService;
 
     @GetMapping("/api/source-csars")
-    public List<CSAR> getSourceCsars() {
+    public List<CSAR> getAllSourceCsars() {
         return populationService.getAllSourceCsars();
+    }
+
+    @GetMapping("/api/compatible-source-csars")
+    public List<CSAR> getCompatibleSourceCsars() {
+        return populationService.getCompatibleSourceCsars();
+    }
+
+    @GetMapping("/api/incompatible-source-csars")
+    public List<CSAR> getIncompatibleSourceCsars() {
+        return populationService.getIncompatibleSourceCsars();
     }
 }

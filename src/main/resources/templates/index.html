@@ -21,9 +21,19 @@
 
         <div class="col-md-4 col-md-offset-1">
             <h1>Source Repo</h1>
+            <h3>compatible</h3>
             <div class="list-group">
-                <div th:each="sourceCsar : ${sourceCsars}">
+                <div th:each="sourceCsar : ${activeSourceCsars}">
                     <a href="" th:onclick="'addToInternal(\'' + ${sourceCsar.id} + '\');'" class="list-group-item">
+                        <h4 class="list-group-item-heading" th:text="'CSAR ' + ${sourceCsar.id}"></h4>
+                        <p class="list-group-item-text" th:text="${sourceCsar.serviceTemplateId}"></p>
+                    </a>
+                </div>
+            </div>
+            <h3>incompatible</h3>
+            <div class="list-group">
+                <div th:each="sourceCsar : ${inactiveSourceCsars}">
+                    <a href="" class="list-group-item disabled">
                         <h4 class="list-group-item-heading" th:text="'CSAR ' + ${sourceCsar.id}"></h4>
                         <p class="list-group-item-text" th:text="${sourceCsar.serviceTemplateId}"></p>
                     </a>

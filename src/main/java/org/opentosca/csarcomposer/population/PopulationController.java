@@ -14,7 +14,8 @@ public class PopulationController {
     @GetMapping("/")
     public ModelAndView getRepositories() {
         ModelAndView mv = new ModelAndView("index");
-        mv.addObject("sourceCsars", populationService.getAllSourceCsars());
+        mv.addObject("activeSourceCsars", populationService.getCompatibleSourceCsars());
+        mv.addObject("inactiveSourceCsars", populationService.getIncompatibleSourceCsars());
         mv.addObject("internalCsars", populationService.getAllInternalCsars());
         return mv;
     }
