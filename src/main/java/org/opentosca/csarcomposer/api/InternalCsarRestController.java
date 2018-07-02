@@ -1,6 +1,6 @@
 package org.opentosca.csarcomposer.api;
 
-import org.opentosca.csarcomposer.population.CSAR;
+import org.opentosca.csarcomposer.model.Csar;
 import org.opentosca.csarcomposer.population.PopulationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ public class InternalCsarRestController {
     PopulationService populationService;
 
     @GetMapping("/api/internal-csars")
-    public List<CSAR> getInternalCsars() {
+    public List<Csar> getInternalCsars() {
         return populationService.getAllInternalCsars();
     }
 
@@ -24,7 +24,7 @@ public class InternalCsarRestController {
     }
 
     @GetMapping("/api/internal-csars/{id}")
-    public CSAR findInternalCsar(@PathVariable final String id) {
+    public Csar findInternalCsar(@PathVariable final String id) {
         return populationService.findInternalCsar(id);
     }
 

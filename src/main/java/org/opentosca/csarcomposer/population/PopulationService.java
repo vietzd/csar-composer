@@ -4,6 +4,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.opentosca.csarcomposer.filter.FilterService;
+import org.opentosca.csarcomposer.model.Csar;
 import org.opentosca.csarcomposer.sorting.SortingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,10 @@ public class PopulationService {
     @Autowired
     FilterService filterService;
 
-    private List<CSAR> sourceRepository = new ArrayList<>();
+    private List<Csar> sourceRepository = new ArrayList<>();
     // TODO outsource internalRepository into a repository
-    private List<CSAR> internalRepository = new ArrayList<>();
-    private Predicate<? super CSAR> filter;
+    private List<Csar> internalRepository = new ArrayList<>();
+    private Predicate<? super Csar> filter;
 
     public PopulationService() {
         IRepository repo = RepositoryFactory.getRepository();
@@ -34,15 +35,15 @@ public class PopulationService {
 //        List<TRequirementRef> requirement = element.getBoundaryDefinitions().getRequirements().getRequirement();
 
         for (ServiceTemplateId serviceTemplateId : allDefinitionsChildIds) {
-            sourceRepository.add(new CSAR(serviceTemplateId));
+            sourceRepository.add(new Csar(serviceTemplateId));
         }
     }
 
-    public List<CSAR> getAllSourceCsars() {
+    public List<Csar> getAllSourceCsars() {
         return sourceRepository;
     }
 
-    public List<CSAR> getCompatibleSourceCsars() {
+    public List<Csar> getCompatibleSourceCsars() {
         if (filter == null) {
             return sourceRepository;
         } else {
@@ -50,7 +51,7 @@ public class PopulationService {
         }
     }
 
-    public List<CSAR> getIncompatibleSourceCsars() {
+    public List<Csar> getIncompatibleSourceCsars() {
         if (filter == null) {
             return null;
         } else {
@@ -58,7 +59,7 @@ public class PopulationService {
         }
     }
 
-    public List<CSAR> getAllInternalCsars() {
+    public List<Csar> getAllInternalCsars() {
         return internalRepository;
     }
 
@@ -75,7 +76,7 @@ public class PopulationService {
     }
 
 
-    public CSAR findInternalCsar(String id) {
+    public Csar findInternalCsar(String id) {
         // TODO
         return internalRepository.get(0);
     }

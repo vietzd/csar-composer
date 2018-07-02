@@ -1,7 +1,8 @@
 package org.opentosca.csarcomposer.sorting;
 
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.opentosca.csarcomposer.population.CSAR;
+import org.opentosca.csarcomposer.model.Csar;
+import org.opentosca.csarcomposer.model.Requirement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,13 +11,13 @@ import java.util.Map;
 
 class TopologyHelper {
 
-    private Map<CSAR, List<CSAR>> outgoingEdges = new HashMap<>();
+    private Map<Csar, List<Csar>> outgoingEdges = new HashMap<>();
 
-    TopologyHelper(List<CSAR> internalRepository) {
-        for (CSAR csar : internalRepository) {
-            List<CSAR> outgoingEdges = new ArrayList<>();
+    TopologyHelper(List<Csar> internalRepository) {
+        for (Csar csar : internalRepository) {
+            List<Csar> outgoingEdges = new ArrayList<>();
             List<CapabilityTypeId> caps = csar.getCapabilities();
-            for (CSAR possibleCandidate : internalRepository) {
+            for (Csar possibleCandidate : internalRepository) {
                 if (oneCapIsRequiredByCsar(caps, possibleCandidate)) {
                     outgoingEdges.add(possibleCandidate);
                 }
@@ -25,14 +26,18 @@ class TopologyHelper {
         }
     }
 
-    private boolean oneCapIsRequiredByCsar(List<CapabilityTypeId> caps, CSAR possibleCandidate) {
-        // TODO implement
+    private boolean oneCapIsRequiredByCsar(List<CapabilityTypeId> caps, Csar possibleCandidate) {
+        for (Requirement r : possibleCandidate.getRequirements()) {
+            if (caps.contains(r.getRequiredCapabilityType())) {
+                return true;
+            }
+        }
         return false;
     }
 
-    List<CSAR> getAllNodesWithNoIncomingEdges() {
-        List<CSAR> result = new ArrayList<>();
-        for (CSAR csar : outgoingEdges.keySet()) { // iterate over all CSARs
+    List<Csar> getAllNodesWithNoIncomingEdges() {
+        List<Csar> result = new ArrayList<>();
+        for (Csar csar : outgoingEdges.keySet()) { // iterate over all CSARs
             if (hasNoIncomingEdges(csar)) {
                 result.add(csar);
             }
@@ -40,8 +45,8 @@ class TopologyHelper {
         return result;
     }
 
-    boolean hasNoIncomingEdges(CSAR csar) {
-        for (List<CSAR> nodes : outgoingEdges.values()) {
+    boolean hasNoIncomingEdges(Csar csar) {
+        for (List<Csar> nodes : outgoingEdges.values()) {
             if (nodes.contains(csar)) {
                 return false;
             }
@@ -49,11 +54,11 @@ class TopologyHelper {
         return true;
     }
 
-    List<CSAR> getOutgoingEdges(CSAR csar) {
+    List<Csar> getOutgoingEdges(Csar csar) {
         return outgoingEdges.get(csar);
     }
 
-    void removeEdge(CSAR source, CSAR target) {
+    void removeEdge(Csar source, Csar target) {
         outgoingEdges.get(source).remove(target);
     }
 }

@@ -1,6 +1,6 @@
 package org.opentosca.csarcomposer.sorting;
 
-import org.opentosca.csarcomposer.population.CSAR;
+import org.opentosca.csarcomposer.model.Csar;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,17 +9,17 @@ import java.util.List;
 @Service
 public class SortingService {
 
-    public List<CSAR> sort(List<CSAR> internalRepository) {
+    public List<Csar> sort(List<Csar> internalRepository) {
         TopologyHelper topologyHelper = new TopologyHelper(internalRepository);
 
-        List<CSAR> result = new ArrayList<>();
-        List<CSAR> nodesWithNoIncomingEdges = topologyHelper.getAllNodesWithNoIncomingEdges();
+        List<Csar> result = new ArrayList<>();
+        List<Csar> nodesWithNoIncomingEdges = topologyHelper.getAllNodesWithNoIncomingEdges();
 
         while (!nodesWithNoIncomingEdges.isEmpty()) {
-            CSAR someNode = nodesWithNoIncomingEdges.get(0);
+            Csar someNode = nodesWithNoIncomingEdges.get(0);
             nodesWithNoIncomingEdges.remove(0);
             result.add(someNode);
-            for (CSAR from : topologyHelper.getOutgoingEdges(someNode)) {
+            for (Csar from : topologyHelper.getOutgoingEdges(someNode)) {
                 topologyHelper.removeEdge(from, someNode);
 
                 if (topologyHelper.hasNoIncomingEdges(from)) {

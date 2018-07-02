@@ -1,13 +1,12 @@
-package org.opentosca.csarcomposer.population;
+package org.opentosca.csarcomposer.model;
 
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CSAR {
+public class Csar {
 
     private static int ID = 0;
 
@@ -15,7 +14,7 @@ public class CSAR {
     private ServiceTemplateId serviceTemplateId;
     private String name;
     private List<CapabilityTypeId> capabilities = new ArrayList<>();
-    private List<RequirementTypeId> requirements = new ArrayList<>();
+    private List<Requirement> requirements = new ArrayList<>();
 
     public List<CapabilityTypeId> getCapabilities() {
         return capabilities;
@@ -25,11 +24,11 @@ public class CSAR {
         this.capabilities = capabilities;
     }
 
-    public List<RequirementTypeId> getRequirements() {
+    public List<Requirement> getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(List<RequirementTypeId> requirements) {
+    public void setRequirements(List<Requirement> requirements) {
         this.requirements = requirements;
     }
 
@@ -57,7 +56,7 @@ public class CSAR {
         this.name = name;
     }
 
-    public CSAR(ServiceTemplateId serviceTemplateId) {
+    public Csar(ServiceTemplateId serviceTemplateId) {
         this.id = ID++;
         this.serviceTemplateId = serviceTemplateId;
     }
