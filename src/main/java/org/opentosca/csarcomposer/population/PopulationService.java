@@ -1,8 +1,6 @@
 package org.opentosca.csarcomposer.population;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.TRequirementRef;
-import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.opentosca.csarcomposer.filter.FilterService;
@@ -10,7 +8,9 @@ import org.opentosca.csarcomposer.sorting.SortingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -23,6 +23,7 @@ public class PopulationService {
     FilterService filterService;
 
     private List<CSAR> sourceRepository = new ArrayList<>();
+    // TODO outsource internalRepository into a repository
     private List<CSAR> internalRepository = new ArrayList<>();
     private Predicate<? super CSAR> filter;
 
