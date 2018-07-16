@@ -1,27 +1,39 @@
 package org.opentosca.csarcomposer.model;
 
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
+import javax.xml.namespace.QName;
 
 public class Requirement {
 
-    private RequirementTypeId requirementTypeId;
-    private CapabilityTypeId requiredCapabilityType;
+    private QName requirementType;
+    private QName requiredCapabilityType;
 
-
-    public RequirementTypeId getRequirementTypeId() {
-        return requirementTypeId;
+    public Requirement(QName requirementQName, QName requiredCapabilityType) {
+        this.requirementType = requirementQName;
+        this.requiredCapabilityType = requiredCapabilityType;
     }
 
-    public void setRequirementTypeId(RequirementTypeId requirementTypeId) {
-        this.requirementTypeId = requirementTypeId;
+
+    public QName getRequirementType() {
+        return requirementType;
     }
 
-    public CapabilityTypeId getRequiredCapabilityType() {
+    public void setRequirementType(QName requirementType) {
+        this.requirementType = requirementType;
+    }
+
+    public QName getRequiredCapabilityType() {
         return requiredCapabilityType;
     }
 
-    public void setRequiredCapabilityType(CapabilityTypeId requiredCapabilityType) {
+    public void setRequiredCapabilityType(QName requiredCapabilityType) {
         this.requiredCapabilityType = requiredCapabilityType;
+    }
+
+    @Override
+    public String toString() {
+        return "Requirement{" +
+                "requirementType=" + requirementType +
+                ", requiredCapabilityType=" + requiredCapabilityType +
+                '}';
     }
 }

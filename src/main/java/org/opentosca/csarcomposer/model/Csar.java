@@ -1,8 +1,8 @@
 package org.opentosca.csarcomposer.model;
 
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,14 +13,21 @@ public class Csar {
     private int id;
     private ServiceTemplateId serviceTemplateId;
     private String name;
-    private List<CapabilityTypeId> capabilities = new ArrayList<>();
-    private List<Requirement> requirements = new ArrayList<>();
+    private List<QName> capabilities;
+    private List<Requirement> requirements;
 
-    public List<CapabilityTypeId> getCapabilities() {
+    public Csar(ServiceTemplateId serviceTemplateId, List<QName> capabilities, List<Requirement> requirements) {
+        this.id = ID++;
+        this.serviceTemplateId = serviceTemplateId;
+        this.capabilities = capabilities;
+        this.requirements = requirements;
+    }
+
+    public List<QName> getCapabilities() {
         return capabilities;
     }
 
-    public void setCapabilities(List<CapabilityTypeId> capabilities) {
+    public void setCapabilities(List<QName> capabilities) {
         this.capabilities = capabilities;
     }
 
@@ -56,8 +63,13 @@ public class Csar {
         this.name = name;
     }
 
-    public Csar(ServiceTemplateId serviceTemplateId) {
-        this.id = ID++;
-        this.serviceTemplateId = serviceTemplateId;
+    @Override
+    public String toString() {
+        return "Csar{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", capabilities=" + capabilities +
+                ", requirements=" + requirements +
+                '}';
     }
 }

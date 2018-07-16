@@ -1,9 +1,9 @@
 package org.opentosca.csarcomposer.sorting;
 
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.opentosca.csarcomposer.model.Csar;
 import org.opentosca.csarcomposer.model.Requirement;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +16,7 @@ class TopologyHelper {
     TopologyHelper(List<Csar> internalRepository) {
         for (Csar csar : internalRepository) {
             List<Csar> outgoingEdges = new ArrayList<>();
-            List<CapabilityTypeId> caps = csar.getCapabilities();
+            List<QName> caps = csar.getCapabilities();
             for (Csar possibleCandidate : internalRepository) {
                 if (oneCapIsRequiredByCsar(caps, possibleCandidate)) {
                     outgoingEdges.add(possibleCandidate);
@@ -26,7 +26,7 @@ class TopologyHelper {
         }
     }
 
-    private boolean oneCapIsRequiredByCsar(List<CapabilityTypeId> caps, Csar possibleCandidate) {
+    private boolean oneCapIsRequiredByCsar(List<QName> caps, Csar possibleCandidate) {
         for (Requirement r : possibleCandidate.getRequirements()) {
             if (caps.contains(r.getRequiredCapabilityType())) {
                 return true;
