@@ -3,7 +3,6 @@ package org.opentosca.csarcomposer.model;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Csar {
@@ -12,7 +11,6 @@ public class Csar {
 
     private int id;
     private ServiceTemplateId serviceTemplateId;
-    private String name;
     private List<QName> capabilities;
     private List<Requirement> requirements;
 
@@ -55,19 +53,10 @@ public class Csar {
         this.serviceTemplateId = serviceTemplateId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Override
     public String toString() {
         return "Csar{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
                 ", capabilities=" + capabilities +
                 ", requirements=" + requirements +
                 '}';
