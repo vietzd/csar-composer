@@ -58,7 +58,9 @@ public class PopulationService {
             @NonNull List<TCapabilityRef> capabilityRefs = capabilities.getCapability();
             for (TCapabilityRef capabilityRef : capabilityRefs) {
                 QName qName = (QName) capabilityRef.getRef();
-                result.add(qName);
+                if (qName != null) {
+                    result.add(qName);
+                }
             }
         }
 
