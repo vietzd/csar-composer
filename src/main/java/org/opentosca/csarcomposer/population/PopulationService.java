@@ -75,7 +75,9 @@ public class PopulationService {
             for (TRequirementRef requirementRef : requirementRefs) {
                 QName qName = (QName) requirementRef.getRef();
                 Requirement requirement = hashmap.get(qName);
-                result.add(requirement);
+                if (requirement != null) {
+                    result.add(requirement);
+                }
             }
         }
 
