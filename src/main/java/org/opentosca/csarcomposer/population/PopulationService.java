@@ -54,12 +54,18 @@ public class PopulationService {
         List<QName> result = new ArrayList<>();
 
         TBoundaryDefinitions.@Nullable Capabilities capabilities = tServiceTemplate.getBoundaryDefinitions().getCapabilities();
-        if (capabilities != null) {
-            @NonNull List<TCapabilityRef> capabilityRefs = capabilities.getCapability();
-            for (TCapabilityRef capabilityRef : capabilityRefs) {
-                QName qName = (QName) capabilityRef.getRef();
-                if (qName != null) {
-                    result.add(qName);
+        if (capabilities == null) {
+            return result;
+        }
+
+        @NonNull List<TCapabilityRef> capabilityRefs = capabilities.getCapability();
+        for (TCapabilityRef capabilityRef : capabilityRefs) {
+            TNodeTemplate referencedNodeTemplate = (TNodeTemplate) capabilityRef.getRef();
+            TNodeTemplate.Capabilities capabilitiesOfReferencedNode = referencedNodeTemplate.getCapabilities();
+            if(capabilitiesOfReferencedNode != null) {
+                @NonNull List<TCapability> capability = capabilitiesOfReferencedNode.getCapability();
+                for (TCapability c : capability) {
+                    result.add(c.getType());
                 }
             }
         }
@@ -71,18 +77,23 @@ public class PopulationService {
         List<Requirement> result = new ArrayList<>();
 
         Map<QName, Requirement> hashmap = mapOfAllRequirements();
-        TBoundaryDefinitions.@Nullable Requirements requirements = tServiceTemplate.getBoundaryDefinitions().getRequirements();
-        if (requirements != null) {
-            @NonNull List<TRequirementRef> requirementRefs = requirements.getRequirement();
-            for (TRequirementRef requirementRef : requirementRefs) {
-                QName qName = (QName) requirementRef.getRef();
-                Requirement requirement = hashmap.get(qName);
-                if (requirement != null) {
-                    result.add(requirement);
+        TBoundaryDefinitions.@Nullable Requirements boundaryRequirements = tServiceTemplate.getBoundaryDefinitions().getRequirements();
+        if (boundaryRequirements == null) {
+            return result;
+        }
+
+        @NonNull List<TRequirementRef> requirementRefs = boundaryRequirements.getRequirement();
+        for (TRequirementRef requirementRef : requirementRefs) {
+            TNodeTemplate referencedNodeTemplate = (TNodeTemplate) requirementRef.getRef();
+            TNodeTemplate.Requirements requirementsOfReferencedNode = referencedNodeTemplate.getRequirements();
+            if (requirementsOfReferencedNode != null) {
+                @NonNull List<TRequirement> requirement = requirementsOfReferencedNode.getRequirement();
+                for (TRequirement r : requirement) {
+                    @NonNull QName type = r.getType();
+                    result.add(hashmap.get(type));
                 }
             }
         }
-
         return result;
     }
 
