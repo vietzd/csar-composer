@@ -4,61 +4,76 @@ import org.opentosca.csarcomposer.model.Csar;
 import org.opentosca.csarcomposer.model.Requirement;
 
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 class TopologyHelper {
 
-    private Map<Csar, List<Csar>> outgoingEdges = new HashMap<>();
+    private List<Csar> originalRepository;
+    private List<Csar> internalRepository = new ArrayList<>();
 
-    TopologyHelper(List<Csar> internalRepository) {
-        for (Csar csar : internalRepository) {
-            List<Csar> outgoingEdges = new ArrayList<>();
-            List<QName> caps = csar.getCapabilities();
-            for (Csar possibleCandidate : internalRepository) {
-                if (oneCapIsRequiredByCsar(caps, possibleCandidate)) {
-                    outgoingEdges.add(possibleCandidate);
-                }
-            }
-            this.outgoingEdges.put(csar, outgoingEdges);
-        }
+    TopologyHelper(List<Csar> originalRepository) {
+        this.originalRepository = originalRepository;
+        originalRepository.forEach(csar -> internalRepository.add(new Csar(csar)));
     }
 
-    private boolean oneCapIsRequiredByCsar(List<QName> caps, Csar possibleCandidate) {
-        for (Requirement r : possibleCandidate.getRequirements()) {
-            if (caps.contains(r.getRequiredCapabilityType())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    List<Csar> getAllNodesWithNoIncomingEdges() {
-        List<Csar> result = new ArrayList<>();
-        for (Csar csar : outgoingEdges.keySet()) { // iterate over all CSARs
-            if (hasNoIncomingEdges(csar)) {
-                result.add(csar);
-            }
-        }
-        return result;
+    List<Csar> getAllNodesWithNoRequirements() {
+        return internalRepository.stream().filter(this::hasNoIncomingEdges).collect(Collectors.toList());
     }
 
     boolean hasNoIncomingEdges(Csar csar) {
-        for (List<Csar> nodes : outgoingEdges.values()) {
-            if (nodes.contains(csar)) {
-                return false;
+        return csar.getRequirements().isEmpty();
+    }
+
+    List<Csar> getAllNodesWithOpenRequirements() {
+        return internalRepository.stream().filter(this::hasOpenRequirements).collect(Collectors.toList());
+    }
+
+    private boolean hasOpenRequirements(Csar csar) {
+        return  csar.getRequirements() != null && !csar.getRequirements().isEmpty();
+    }
+
+    List<Csar> getAllNodesThatRequireSomeCapabilityOf(Csar someNode) {
+        List<Csar> result = new ArrayList<>();
+
+        List<QName> capabilities = someNode.getCapabilities();
+
+        for (Csar possibleCandidate : internalRepository) {
+            List<Requirement> requirements = possibleCandidate.getRequirements();
+            for (Requirement r : requirements) {
+                if (capabilities.contains(r.getRequiredCapabilityType())) {
+                    result.add(possibleCandidate);
+                }
             }
         }
-        return true;
+
+        return result;
     }
 
-    List<Csar> getOutgoingEdges(Csar csar) {
-        return outgoingEdges.get(csar);
+    /**
+     * Removes all requirements of someNode with given capability as requiredCapability
+     * @param capability if this capabilityType is required, the particular requirement will be deleted
+     * @param someNode some of its requirements will be removed
+     */
+    void removeEdge(QName capability, Csar someNode) {
+        for (Requirement r : someNode.getRequirements()) {
+            if (capability.equals(r.getRequiredCapabilityType())) {
+                someNode.getRequirements().remove(r);
+            }
+        }
     }
 
-    void removeEdge(Csar source, Csar target) {
-        outgoingEdges.get(source).remove(target);
+    Csar getOriginalNode(Csar someNode) {
+        for (Csar csar : originalRepository) {
+            if (csar.getId() == someNode.getId()) {
+                return csar;
+            }
+        }
+        System.out.println("Error: didn't find original csar for " + someNode);
+        return someNode;
+    }
+
+    void removeAllRequirementsOf(Csar someNode) {
+        someNode.getRequirements().clear();
     }
 }
