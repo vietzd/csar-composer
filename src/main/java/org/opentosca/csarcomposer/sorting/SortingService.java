@@ -19,7 +19,6 @@ public class SortingService {
         List<Csar> result = new ArrayList<>(kahn());
 
         if (!topologyHelper.getAllNodesWithOpenRequirements().isEmpty()) {
-            System.out.println("Warning: There are open requirements or cycles left:");
             List<Csar> nodesWithOpenRequirements = topologyHelper.getAllNodesWithOpenRequirements();
             while(!nodesWithOpenRequirements.isEmpty()) {
                 Csar someNode = nodesWithOpenRequirements.get(0);
