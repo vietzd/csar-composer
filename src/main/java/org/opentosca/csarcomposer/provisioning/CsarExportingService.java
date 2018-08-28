@@ -1,6 +1,5 @@
 package org.opentosca.csarcomposer.provisioning;
 
-import org.apache.commons.compress.archivers.ArchiveException;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.CsarExporter;
@@ -49,7 +48,7 @@ class CsarExportingService {
             OutputStream outputStream = new FileOutputStream(file);
             try {
                 String s = csarExporter.writeCsar(RepositoryFactory.getRepository(), csar.getServiceTemplateId(), outputStream, new HashMap<>());
-            } catch (ArchiveException | JAXBException | RepositoryCorruptException e) {
+            } catch (JAXBException | RepositoryCorruptException e) {
                 e.printStackTrace();
             }
 

@@ -10,10 +10,11 @@ import org.codehaus.jettison.json.JSONException;
 import org.opentosca.csarcomposer.model.Csar;
 
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 class InstanceCreationService {
 
-    void createServiceInstance2(Csar csar) {
+    void createServiceInstance2(Csar csar, List<JSONArray> availableParams) {
         String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
         String mainServiceTemplateInstancesUrl = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
                 "%257Bhttp%253A%252F%252Fopentosca.org%252Fservicetemplates%257D" + csarName + "/buildplans/" + csarName +
@@ -22,6 +23,10 @@ class InstanceCreationService {
         ClientConfig cc = new DefaultClientConfig();
         cc.getClasses().add(JSONArrayProvider.App.class);
         Client c = Client.create(cc);
+
+        // TODO: get List of input Parameter
+        // TODO: check if some of those parameters are available via "requiredParams"
+        // TODO: fill out input Parameter
 
         String inputParams = "[\n" +
                 "  {\n" +

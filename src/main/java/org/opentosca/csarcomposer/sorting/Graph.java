@@ -7,12 +7,12 @@ import javax.xml.namespace.QName;
 import java.util.*;
 import java.util.stream.Collectors;
 
-class TopologyHelper {
+class Graph {
 
     private List<Csar> originalRepository;
     private List<Csar> internalRepository = new ArrayList<>();
 
-    TopologyHelper(List<Csar> originalRepository) {
+    Graph(List<Csar> originalRepository) {
         this.originalRepository = originalRepository;
         originalRepository.forEach(csar -> internalRepository.add(new Csar(csar)));
     }

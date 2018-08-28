@@ -10,21 +10,21 @@ import java.util.List;
 @Service
 public class SortingService {
 
-    private TopologyHelper topologyHelper;
+    private Graph graph;
 
     public List<Csar> sort(List<Csar> internalRepository) {
 
-        topologyHelper = new TopologyHelper(internalRepository);
+        graph = new Graph(internalRepository);
 
         List<Csar> result = new ArrayList<>(kahn());
 
-        if (!topologyHelper.getAllNodesWithOpenRequirements().isEmpty()) {
-            List<Csar> nodesWithOpenRequirements = topologyHelper.getAllNodesWithOpenRequirements();
+        if (!graph.getAllNodesWithOpenRequirements().isEmpty()) {
+            List<Csar> nodesWithOpenRequirements = graph.getAllNodesWithOpenRequirements();
             while(!nodesWithOpenRequirements.isEmpty()) {
                 Csar someNode = nodesWithOpenRequirements.get(0);
-                topologyHelper.removeAllRequirementsOf(someNode);
+                graph.removeAllRequirementsOf(someNode);
                 result.addAll(kahn());
-                nodesWithOpenRequirements = topologyHelper.getAllNodesWithOpenRequirements();
+                nodesWithOpenRequirements = graph.getAllNodesWithOpenRequirements();
             }
         }
 
@@ -33,17 +33,17 @@ public class SortingService {
 
     private List<Csar> kahn() {
         List<Csar> result = new ArrayList<>();
-        List<Csar> nodesWithNoRequirements = topologyHelper.getAllNodesWithNoRequirements();
+        List<Csar> nodesWithNoRequirements = graph.getAllNodesWithNoRequirements();
         while (!nodesWithNoRequirements.isEmpty()) {
             Csar someNode = nodesWithNoRequirements.get(0);
             nodesWithNoRequirements.remove(0);
-            result.add(topologyHelper.getOriginalNode(someNode));
-            for (Csar from : topologyHelper.getAllNodesThatRequireSomeCapabilityOf(someNode)) {
+            result.add(graph.getOriginalNode(someNode));
+            for (Csar from : graph.getAllNodesThatRequireSomeCapabilityOf(someNode)) {
                 for (QName capability : from.getCapabilities()) {
-                    topologyHelper.removeEdge(capability, someNode);
+                    graph.removeEdge(capability, someNode);
                 }
 
-                if (topologyHelper.hasNoIncomingEdges(from)) {
+                if (graph.hasNoIncomingEdges(from)) {
                     nodesWithNoRequirements.add(from);
                 }
             }
