@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 class ProvisioningService {
@@ -43,7 +44,7 @@ class ProvisioningService {
     }
 
     private JSONArray getOutputParameter(Csar csar) {
-        JSONArray result = null;
+        JSONArray result;
 
         String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
         String mainServiceTemplateInstancesUrl = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
@@ -87,11 +88,11 @@ class ProvisioningService {
         int counter = 0;
         while (!getStatusOf(csar).equals("CREATED")) {
             try {
-                wait(500);
+                TimeUnit.MILLISECONDS.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (counter >= 120) {
+            if (counter >= 10) {
                 System.out.println("ERROR - Provisioning couldnt finish in one minute. Cancelling");
                 return;
             }
@@ -100,10 +101,29 @@ class ProvisioningService {
     }
 
     private String getStatusOf(Csar csar) {
-        /*
-        http://localhost:1337/csars/MyTinyToDo_Bare_Docker.csar/servicetemplates/%257Bhttp%253A%252F%252Fopentosca.org%252Fservicetemplates%257DMyTinyToDo_Bare_Docker/instances
-         */
+        String result;
 
-        return "CREATED";
+        String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
+        String mainServiceTemplateInstancesUrl = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
+                "%257Bhttp%253A%252F%252Fopentosca.org%252Fservicetemplates%257D" + csarName + "/instances/";
+
+        Client client = Client.create();
+        WebResource webResource = client.resource(mainServiceTemplateInstancesUrl);
+        ClientResponse response = webResource.get(ClientResponse.class);
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        String responseEntity = response.getEntity(String.class);
+
+        try {
+            JSONObject responseAsJson = new JSONObject(responseEntity);
+            JSONArray instances = responseAsJson.getJSONArray("service_template_instances");
+            result = instances.getJSONObject(instances.length()-1).getString("state"); // Status of last created instance
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result = "CREATED";
+        }
+
+        return result;
     }
 }
