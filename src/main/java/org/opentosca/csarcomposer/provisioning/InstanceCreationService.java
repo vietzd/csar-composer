@@ -14,7 +14,7 @@ import java.util.List;
 
 class InstanceCreationService {
 
-    void createServiceInstance2(Csar csar, List<JSONArray> availableParams) {
+    void createServiceInstance(Csar csar, List<JSONArray> availableParams) {
         String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
         String mainServiceTemplateInstancesUrl = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
                 "%257Bhttp%253A%252F%252Fopentosca.org%252Fservicetemplates%257D" + csarName + "/buildplans/" + csarName +

@@ -30,7 +30,7 @@ class ProvisioningService {
         List<File> csarFiles = csarExportingService.exportCsarsToFile(allInternalCsars);
         csarFiles.forEach(csarUploadingService::uploadCsar);
         for (Csar csar : allInternalCsars) {
-            instanceCreationService.createServiceInstance2(csar, getRequiredParameter(csar));
+            instanceCreationService.createServiceInstance(csar, getRequiredParameter(csar));
             waitUntilCreated(csar);
             for (QName capability : csar.getCapabilities()) {
                 // initialize array if capability is not in availableParams yet
@@ -41,36 +41,6 @@ class ProvisioningService {
                 availableParams.get(capability).add(getOutputParameter(csar));
             }
         }
-    }
-
-    private JSONArray getOutputParameter(Csar csar) {
-        JSONArray result;
-
-        String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
-        String mainServiceTemplateInstancesUrl = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
-                "%257Bhttp%253A%252F%252Fopentosca.org%252Fservicetemplates%257D" + csarName + "/buildplans/" + csarName +
-                "_buildPlan/instances";
-
-        Client client = Client.create();
-        WebResource webResource = client.resource(mainServiceTemplateInstancesUrl);
-        ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        String responseEntity = response.getEntity(String.class);
-
-        try {
-            JSONObject responseAsJson = new JSONObject(responseEntity);
-            JSONArray planInstances = responseAsJson.getJSONArray("plan_instances");
-
-            // TODO: for all instances
-            result = planInstances.getJSONObject(0).getJSONArray("outputs");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            result = new JSONArray();
-        }
-        return result;
     }
 
     private List<JSONArray> getRequiredParameter(Csar csar) {
@@ -124,6 +94,36 @@ class ProvisioningService {
             result = "CREATED";
         }
 
+        return result;
+    }
+
+    private JSONArray getOutputParameter(Csar csar) {
+        JSONArray result;
+
+        String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
+        String mainServiceTemplateInstancesUrl = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
+                "%257Bhttp%253A%252F%252Fopentosca.org%252Fservicetemplates%257D" + csarName + "/buildplans/" + csarName +
+                "_buildPlan/instances";
+
+        Client client = Client.create();
+        WebResource webResource = client.resource(mainServiceTemplateInstancesUrl);
+        ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        String responseEntity = response.getEntity(String.class);
+
+        try {
+            JSONObject responseAsJson = new JSONObject(responseEntity);
+            JSONArray planInstances = responseAsJson.getJSONArray("plan_instances");
+
+            // TODO: for all instances
+            result = planInstances.getJSONObject(0).getJSONArray("outputs");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result = new JSONArray();
+        }
         return result;
     }
 }
