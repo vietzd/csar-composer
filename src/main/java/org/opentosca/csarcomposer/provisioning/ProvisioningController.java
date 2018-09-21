@@ -17,6 +17,7 @@ public class ProvisioningController {
     ProvisioningService provisioningService;
 
     @GetMapping("/start-provisioning")
+    //TODO POST Mapping!
     public ModelAndView getRepositories() {
         ModelAndView mv = new ModelAndView("provisioning");
         mv.addObject("internalCsars", populationService.getAllInternalCsars());

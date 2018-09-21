@@ -88,7 +88,11 @@ class ProvisioningService {
         try {
             JSONObject responseAsJson = new JSONObject(responseEntity);
             JSONArray instances = responseAsJson.getJSONArray("service_template_instances");
-            result = instances.getJSONObject(instances.length()-1).getString("state"); // Status of last created instance
+            if (instances.length() >= 0) {
+                result = instances.getJSONObject(instances.length() - 1).getString("state"); // Status of last created instance
+            } else {
+                result = "CREATING";
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             result = "CREATED";

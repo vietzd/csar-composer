@@ -1,5 +1,6 @@
 package org.opentosca.csarcomposer.sorting;
 
+import com.sun.xml.bind.v2.TODO;
 import org.opentosca.csarcomposer.model.Csar;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +17,23 @@ public class SortingService {
 
         graph = new Graph(internalRepository);
 
-        List<Csar> result = new ArrayList<>(kahn());
+        List<Csar> result = null;
+        try {
+            result = new ArrayList<>(kahn());
+        } catch (CyclicGraphException e) {
+            e.printStackTrace();
+        }
 
         if (!graph.getAllNodesWithOpenRequirements().isEmpty()) {
             List<Csar> nodesWithOpenRequirements = graph.getAllNodesWithOpenRequirements();
             while(!nodesWithOpenRequirements.isEmpty()) {
                 Csar someNode = nodesWithOpenRequirements.get(0);
                 graph.removeAllRequirementsOf(someNode);
-                result.addAll(kahn());
+                try {
+                    result.addAll(kahn());
+                } catch (CyclicGraphException e) {
+                    e.printStackTrace();
+                }
                 nodesWithOpenRequirements = graph.getAllNodesWithOpenRequirements();
             }
         }
@@ -31,22 +41,23 @@ public class SortingService {
         return result;
     }
 
-    private List<Csar> kahn() {
+    private List<Csar> kahn() throws CyclicGraphException{
         List<Csar> result = new ArrayList<>();
         List<Csar> nodesWithNoRequirements = graph.getAllNodesWithNoRequirements();
         while (!nodesWithNoRequirements.isEmpty()) {
             Csar someNode = nodesWithNoRequirements.get(0);
+            graph.removeNode(someNode);
             nodesWithNoRequirements.remove(0);
             result.add(graph.getOriginalNode(someNode));
             for (Csar from : graph.getAllNodesThatRequireSomeCapabilityOf(someNode)) {
-                for (QName capability : from.getCapabilities()) {
-                    graph.removeEdge(capability, someNode);
-                }
-
+                graph.removeEdge(from, someNode);
                 if (graph.hasNoIncomingEdges(from)) {
                     nodesWithNoRequirements.add(from);
                 }
             }
+        }
+        if (graph.hasNodes()) {
+            throw new CyclicGraphException();
         }
         return result;
     }

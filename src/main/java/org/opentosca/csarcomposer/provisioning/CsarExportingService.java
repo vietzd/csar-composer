@@ -22,20 +22,21 @@ class CsarExportingService {
     List<File> exportCsarsToFile(List<Csar> csars) {
         System.out.println("Export CSARs: " + csars);
         try {
-            return exportCsarsToFileException(csars);
+            return exportCsarsToFileEx(csars);
         } catch (IOException e) {
             e.printStackTrace();
             return new ArrayList<>();
         }
     }
 
-    private List<File> exportCsarsToFileException(List<Csar> csars) throws IOException {
+    private List<File> exportCsarsToFileEx(List<Csar> csars) throws IOException {
         List<File> result = new ArrayList<>();
         for (Csar csar : csars) {
 
             CsarExporter csarExporter = new CsarExporter();
 
             String path = "/home/daniel/export-test/" + csar.getServiceTemplateId().getQName().getLocalPart() + ".csar";
+            //TODO: Generic Path
             File file = new File(path);
 
             if (!file.exists()) {

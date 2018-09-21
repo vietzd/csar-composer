@@ -55,7 +55,13 @@ class Graph {
      * @param capability if this capabilityType is required, the particular requirement will be deleted
      * @param someNode some of its requirements will be removed
      */
-    void removeEdge(QName capability, Csar someNode) {
+    void removeEdge(Csar from, Csar someNode) {
+        for (QName capability : from.getCapabilities()) {
+            removeEdge(capability, someNode);
+        }
+    }
+
+    private void removeEdge(QName capability, Csar someNode){
         for (Requirement r : someNode.getRequirements()) {
             if (capability.equals(r.getRequiredCapabilityType())) {
                 someNode.getRequirements().remove(r);
@@ -75,5 +81,13 @@ class Graph {
 
     void removeAllRequirementsOf(Csar someNode) {
         someNode.getRequirements().clear();
+    }
+
+    public boolean hasNodes() {
+        return !internalRepository.isEmpty();
+    }
+
+    public void removeNode(Csar someNode) {
+        internalRepository.remove(someNode);
     }
 }
