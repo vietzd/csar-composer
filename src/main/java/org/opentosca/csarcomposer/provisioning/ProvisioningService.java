@@ -62,7 +62,7 @@ class ProvisioningService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (counter >= 10) {
+            if (counter >= 120) {
                 System.out.println("ERROR - Provisioning couldnt finish in one minute. Cancelling");
                 return;
             }
@@ -88,7 +88,7 @@ class ProvisioningService {
         try {
             JSONObject responseAsJson = new JSONObject(responseEntity);
             JSONArray instances = responseAsJson.getJSONArray("service_template_instances");
-            if (instances.length() >= 0) {
+            if (instances.length() > 0) {
                 result = instances.getJSONObject(instances.length() - 1).getString("state"); // Status of last created instance
             } else {
                 result = "CREATING";

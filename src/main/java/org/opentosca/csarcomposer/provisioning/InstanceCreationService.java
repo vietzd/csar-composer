@@ -7,6 +7,7 @@ import com.sun.jersey.api.client.filter.LoggingFilter;
 import com.sun.jersey.json.impl.provider.entity.JSONArrayProvider;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.opentosca.csarcomposer.model.Csar;
 
 import javax.ws.rs.core.MediaType;
@@ -24,9 +25,26 @@ class InstanceCreationService {
         cc.getClasses().add(JSONArrayProvider.App.class);
         Client c = Client.create(cc);
 
-        // TODO: get List of input Parameter
-        // TODO: check if some of those parameters are available via "requiredParams"
-        // TODO: fill out input Parameter
+        /*
+            TODO use a generic way to retrieve input-parameter:
+            get a list of needed input-parameter
+            try to fill this list with values from available params
+            get the remaining values from a config-file
+         */
+        JSONObject topicAdress = null;
+        for (JSONArray jsonArray : availableParams) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    JSONObject inputParam = jsonArray.getJSONObject(i);
+                    System.out.println(inputParam.getString("name"));
+                    if (inputParam.getString("name").equals("TopicAdress")) {
+                        topicAdress = inputParam;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         String inputParams = "[\n" +
                 "  {\n" +
@@ -46,6 +64,10 @@ class InstanceCreationService {
         JSONArray array = null;
         try {
             array = new JSONArray(inputParams);
+            if (topicAdress != null) {
+                array.put(array.length(), topicAdress);
+            }
+            System.out.println("Composition input params: \n" + array);
         } catch (JSONException e) {
             e.printStackTrace();
         }

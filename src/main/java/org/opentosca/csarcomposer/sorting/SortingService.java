@@ -17,23 +17,15 @@ public class SortingService {
 
         graph = new Graph(internalRepository);
 
-        List<Csar> result = null;
-        try {
-            result = new ArrayList<>(kahn());
-        } catch (CyclicGraphException e) {
-            e.printStackTrace();
-        }
+        List<Csar> result = new ArrayList<>(kahn());
+
 
         if (!graph.getAllNodesWithOpenRequirements().isEmpty()) {
             List<Csar> nodesWithOpenRequirements = graph.getAllNodesWithOpenRequirements();
             while(!nodesWithOpenRequirements.isEmpty()) {
                 Csar someNode = nodesWithOpenRequirements.get(0);
                 graph.removeAllRequirementsOf(someNode);
-                try {
-                    result.addAll(kahn());
-                } catch (CyclicGraphException e) {
-                    e.printStackTrace();
-                }
+                result.addAll(kahn());
                 nodesWithOpenRequirements = graph.getAllNodesWithOpenRequirements();
             }
         }
@@ -41,7 +33,7 @@ public class SortingService {
         return result;
     }
 
-    private List<Csar> kahn() throws CyclicGraphException{
+    private List<Csar> kahn() {
         List<Csar> result = new ArrayList<>();
         List<Csar> nodesWithNoRequirements = graph.getAllNodesWithNoRequirements();
         while (!nodesWithNoRequirements.isEmpty()) {
@@ -55,9 +47,6 @@ public class SortingService {
                     nodesWithNoRequirements.add(from);
                 }
             }
-        }
-        if (graph.hasNodes()) {
-            throw new CyclicGraphException();
         }
         return result;
     }

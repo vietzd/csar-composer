@@ -84,11 +84,13 @@ public class FilterService {
         @NonNull List<TCapabilityRef> capabilityRefs = capabilities.getCapability();
         for (TCapabilityRef capabilityRef : capabilityRefs) {
             TNodeTemplate referencedNodeTemplate = (TNodeTemplate) capabilityRef.getRef();
-            TNodeTemplate.Capabilities capabilitiesOfReferencedNode = referencedNodeTemplate.getCapabilities();
-            if(capabilitiesOfReferencedNode != null) {
-                @NonNull List<TCapability> capability = capabilitiesOfReferencedNode.getCapability();
-                for (TCapability c : capability) {
-                    result.add(c.getType());
+            if (referencedNodeTemplate != null) {
+                TNodeTemplate.Capabilities capabilitiesOfReferencedNode = referencedNodeTemplate.getCapabilities();
+                if (capabilitiesOfReferencedNode != null) {
+                    @NonNull List<TCapability> capability = capabilitiesOfReferencedNode.getCapability();
+                    for (TCapability c : capability) {
+                        result.add(c.getType());
+                    }
                 }
             }
         }
@@ -108,12 +110,14 @@ public class FilterService {
         @NonNull List<TRequirementRef> requirementRefs = boundaryRequirements.getRequirement();
         for (TRequirementRef requirementRef : requirementRefs) {
             TNodeTemplate referencedNodeTemplate = (TNodeTemplate) requirementRef.getRef();
-            TNodeTemplate.Requirements requirementsOfReferencedNode = referencedNodeTemplate.getRequirements();
-            if (requirementsOfReferencedNode != null) {
-                @NonNull List<TRequirement> requirement = requirementsOfReferencedNode.getRequirement();
-                for (TRequirement r : requirement) {
-                    @NonNull QName type = r.getType();
-                    result.add(hashmap.get(type));
+            if (referencedNodeTemplate != null) {
+                TNodeTemplate.Requirements requirementsOfReferencedNode = referencedNodeTemplate.getRequirements();
+                if (requirementsOfReferencedNode != null) {
+                    @NonNull List<TRequirement> requirement = requirementsOfReferencedNode.getRequirement();
+                    for (TRequirement r : requirement) {
+                        @NonNull QName type = r.getType();
+                        result.add(hashmap.get(type));
+                    }
                 }
             }
         }
