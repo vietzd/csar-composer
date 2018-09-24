@@ -41,10 +41,10 @@ public class SortingService {
             graph.removeNode(someNode);
             nodesWithNoRequirements.remove(0);
             result.add(graph.getOriginalNode(someNode));
-            for (Csar from : graph.getAllNodesThatRequireSomeCapabilityOf(someNode)) {
-                graph.removeEdge(from, someNode);
-                if (graph.hasNoIncomingEdges(from)) {
-                    nodesWithNoRequirements.add(from);
+            for (Csar to : graph.getAllNodesThatRequireSomeCapabilityOf(someNode)) {
+                graph.removeEdge(someNode, to);
+                if (graph.hasNoIncomingEdges(to)) {
+                    nodesWithNoRequirements.add(to);
                 }
             }
         }

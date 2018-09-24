@@ -17,6 +17,25 @@ class Graph {
         originalRepository.forEach(csar -> internalRepository.add(new Csar(csar)));
     }
 
+    void ignoreOpenCapabilities() {
+        for (Csar csar : internalRepository) {
+            for (QName capability : csar.getCapabilities()) {
+                boolean capabilityIsUsed = false;
+                for (Csar possibleCandidate : internalRepository) {
+                    List<Requirement> requirements = possibleCandidate.getRequirements();
+                    for (Requirement requirement : requirements) {
+                        if (requirement.getRequiredCapabilityType().equals(capability)) {
+                            capabilityIsUsed = true;
+                        }
+                    }
+                }
+                if (!capabilityIsUsed) {
+                    csar.getCapabilities().remove(capability);
+                }
+            }
+        }
+    }
+
     List<Csar> getAllNodesWithNoRequirements() {
         return internalRepository.stream().filter(this::hasNoIncomingEdges).collect(Collectors.toList());
     }
@@ -53,20 +72,22 @@ class Graph {
     /**
      * Removes all requirements of someNode with given capability as requiredCapability
      * @param capability if this capabilityType is required, the particular requirement will be deleted
-     * @param someNode some of its requirements will be removed
+     * @param to some of its requirements will be removed
      */
-    void removeEdge(Csar from, Csar someNode) {
-        for (QName capability : from.getCapabilities()) {
-            removeEdge(capability, someNode);
+    void removeEdge(Csar someNode, Csar to) {
+        for (QName capability : someNode.getCapabilities()) {
+            removeEdge(capability, to);
         }
     }
 
     private void removeEdge(QName capability, Csar someNode){
+        List<Requirement> requirementsToRemove = new ArrayList<>();
         for (Requirement r : someNode.getRequirements()) {
             if (capability.equals(r.getRequiredCapabilityType())) {
-                someNode.getRequirements().remove(r);
+                requirementsToRemove.add(r);
             }
         }
+        someNode.getRequirements().removeAll(requirementsToRemove);
     }
 
     Csar getOriginalNode(Csar someNode) {
