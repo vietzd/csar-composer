@@ -6,6 +6,7 @@ import com.sun.jersey.api.client.WebResource;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.opentosca.csarcomposer.model.Csar;
 import org.opentosca.csarcomposer.model.Requirement;
 import org.springframework.stereotype.Service;
