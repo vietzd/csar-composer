@@ -69,7 +69,11 @@ public class FilterService {
                 }
             }
 
-            return true; // TODO return false
+            if(usedCapabilities.isEmpty() && usedRequirements.isEmpty()) {
+                return true;
+            }
+
+            return false;
         };
     }
 
@@ -83,7 +87,17 @@ public class FilterService {
 
         @NonNull List<TCapabilityRef> capabilityRefs = capabilities.getCapability();
         for (TCapabilityRef capabilityRef : capabilityRefs) {
-            TNodeTemplate referencedNodeTemplate = (TNodeTemplate) capabilityRef.getRef();
+            @NonNull TCapability ref = capabilityRef.getRef();
+            TNodeTemplate referencedNodeTemplate = null;
+            for (TNodeTemplate nodeTemplate : tServiceTemplate.getTopologyTemplate().getNodeTemplates()) {
+                if (nodeTemplate != null && nodeTemplate.getCapabilities() != null) {
+                    for (TCapability cap : nodeTemplate.getCapabilities().getCapability()) {
+                        if (cap.equals(ref)) {
+                            referencedNodeTemplate = nodeTemplate;
+                        }
+                    }
+                }
+            }
             if (referencedNodeTemplate != null) {
                 TNodeTemplate.Capabilities capabilitiesOfReferencedNode = referencedNodeTemplate.getCapabilities();
                 if (capabilitiesOfReferencedNode != null) {
@@ -109,7 +123,17 @@ public class FilterService {
 
         @NonNull List<TRequirementRef> requirementRefs = boundaryRequirements.getRequirement();
         for (TRequirementRef requirementRef : requirementRefs) {
-            TNodeTemplate referencedNodeTemplate = (TNodeTemplate) requirementRef.getRef();
+            @NonNull TRequirement ref = requirementRef.getRef();
+            TNodeTemplate referencedNodeTemplate = null;
+            for (TNodeTemplate nodeTemplate : tServiceTemplate.getTopologyTemplate().getNodeTemplates()) {
+                if (nodeTemplate != null && nodeTemplate.getRequirements() != null) {
+                    for (TRequirement req : nodeTemplate.getRequirements().getRequirement()) {
+                        if (req.equals(ref)) {
+                            referencedNodeTemplate = nodeTemplate;
+                        }
+                    }
+                }
+            }
             if (referencedNodeTemplate != null) {
                 TNodeTemplate.Requirements requirementsOfReferencedNode = referencedNodeTemplate.getRequirements();
                 if (requirementsOfReferencedNode != null) {
