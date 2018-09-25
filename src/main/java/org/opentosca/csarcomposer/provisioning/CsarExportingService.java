@@ -35,8 +35,7 @@ class CsarExportingService {
 
             CsarExporter csarExporter = new CsarExporter();
 
-            String path = "/home/daniel/export-test/" + csar.getServiceTemplateId().getQName().getLocalPart() + ".csar";
-            //TODO: Generic Path
+            String path = System.getProperty("user.home") + "/export-test/" + csar.getServiceTemplateId().getQName().getLocalPart() + ".csar";
             File file = new File(path);
 
             if (!file.exists()) {
