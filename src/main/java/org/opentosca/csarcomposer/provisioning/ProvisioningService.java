@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.namespace.QName;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -27,19 +24,62 @@ class ProvisioningService {
     private Map<QName, List<JSONArray>> availableParams = new HashMap<>();
 
     void startProvisioning(List<Csar> allInternalCsars) {
-        List<File> csarFiles = csarExportingService.exportCsarsToFile(allInternalCsars);
-        csarFiles.forEach(csarUploadingService::uploadCsar);
-        for (Csar csar : allInternalCsars) {
+        List<Csar> onboardingCsars = generateOnboardingCsars(allInternalCsars);
+
+        List<File> exportedCsars = csarExportingService.exportCsarsToFile(onboardingCsars);
+
+        exportedCsars.forEach(csarUploadingService::uploadCsar);
+
+        createInstancesFor(onboardingCsars);
+    }
+
+    private void createInstancesFor(List<Csar> csars) {
+        for (Csar csar : csars) {
             instanceCreationService.createServiceInstance(csar, getRequiredParameter(csar));
             waitUntilCreated(csar);
-            for (QName capability : csar.getCapabilities()) {
-                // initialize array if capability is not in availableParams yet
-                if (availableParams.get(capability) == null) {
-                    List<JSONArray> jsonArrayList = new ArrayList<>();
-                    availableParams.put(capability, jsonArrayList);
-                }
-                availableParams.get(capability).add(getOutputParameter(csar));
+            addOutputParameterToAvailableParams(csar);
+        }
+    }
+
+    private void addOutputParameterToAvailableParams(Csar csar) {
+        for (QName capability : csar.getCapabilities()) {
+            if (availableParams.get(capability) == null) {
+                List<JSONArray> jsonArrayList = new ArrayList<>();
+                availableParams.put(capability, jsonArrayList);
             }
+            availableParams.get(capability).add(getOutputParameter(csar));
+        }
+    }
+
+    private List<Csar> generateOnboardingCsars(List<Csar> allInternalCsars) {
+        List<Csar> result = new ArrayList<>();
+        for (Csar csar : allInternalCsars) {
+            if (getInstancesOf(csar).length() == 0) {
+                result.add(csar);
+            } else {
+                System.out.println("Found already running instance for " + csar.getServiceTemplateId());
+                addOutputParameterToAvailableParams(csar);
+            }
+        }
+        return result;
+    }
+
+    private JSONArray getInstancesOf(Csar csar) {
+        String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
+        String url = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
+                "%257Bhttp%253A%252F%252Fopentosca.org%252Fservicetemplates%257D" + csarName + "/instances/";
+        String responseEntity;
+        try {
+             responseEntity = getResponse(url);
+        } catch (RuntimeException ex) {
+            return new JSONArray();
+        }
+        try {
+            JSONObject responseAsJson = new JSONObject(responseEntity);
+            return responseAsJson.getJSONArray("service_template_instances");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new JSONArray();
         }
     }
 
@@ -71,51 +111,29 @@ class ProvisioningService {
     }
 
     private String getStatusOf(Csar csar) {
-        String result;
+        String result = "";
 
-        String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
-        String mainServiceTemplateInstancesUrl = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
-                "%257Bhttp%253A%252F%252Fopentosca.org%252Fservicetemplates%257D" + csarName + "/instances/";
-
-        Client client = Client.create();
-        WebResource webResource = client.resource(mainServiceTemplateInstancesUrl);
-        ClientResponse response = webResource.get(ClientResponse.class);
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        String responseEntity = response.getEntity(String.class);
-
-        try {
-            JSONObject responseAsJson = new JSONObject(responseEntity);
-            JSONArray instances = responseAsJson.getJSONArray("service_template_instances");
-            if (instances.length() > 0) {
-                result = instances.getJSONObject(instances.length() - 1).getString("state"); // Status of last created instance
-            } else {
-                result = "CREATING";
+        JSONArray instances = getInstancesOf(csar);
+        if (instances.length() > 0) {
+            try {
+                // get status of last created instance
+                result = instances.getJSONObject(instances.length() - 1).getString("state");
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            result = "CREATED";
+        } else {
+            result = "CREATING";
         }
-
         return result;
     }
 
     private JSONArray getOutputParameter(Csar csar) {
         JSONArray result;
-
         String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
-        String mainServiceTemplateInstancesUrl = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
+        String url = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
                 "%257Bhttp%253A%252F%252Fopentosca.org%252Fservicetemplates%257D" + csarName + "/buildplans/" + csarName +
                 "_buildPlan/instances";
-
-        Client client = Client.create();
-        WebResource webResource = client.resource(mainServiceTemplateInstancesUrl);
-        ClientResponse response = webResource.accept("application/json").get(ClientResponse.class);
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        String responseEntity = response.getEntity(String.class);
+        String responseEntity = getResponse(url);
 
         try {
             JSONObject responseAsJson = new JSONObject(responseEntity);
@@ -129,5 +147,15 @@ class ProvisioningService {
             result = new JSONArray();
         }
         return result;
+    }
+
+    private String getResponse(String url) {
+        Client client = Client.create();
+        WebResource webResource = client.resource(url);
+        ClientResponse response = webResource.get(ClientResponse.class);
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+        }
+        return response.getEntity(String.class);
     }
 }

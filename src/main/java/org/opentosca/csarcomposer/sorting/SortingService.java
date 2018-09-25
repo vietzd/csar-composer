@@ -1,10 +1,8 @@
 package org.opentosca.csarcomposer.sorting;
 
-import com.sun.xml.bind.v2.TODO;
 import org.opentosca.csarcomposer.model.Csar;
 import org.springframework.stereotype.Service;
 
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class SortingService {
 
         if (!graph.getAllNodesWithOpenRequirements().isEmpty()) {
             List<Csar> nodesWithOpenRequirements = graph.getAllNodesWithOpenRequirements();
-            while(!nodesWithOpenRequirements.isEmpty()) {
+            while (!nodesWithOpenRequirements.isEmpty()) {
                 Csar someNode = nodesWithOpenRequirements.get(0);
                 graph.removeAllRequirementsOf(someNode);
                 result.addAll(kahn());
@@ -41,10 +39,10 @@ public class SortingService {
             graph.removeNode(someNode);
             nodesWithNoRequirements.remove(0);
             result.add(graph.getOriginalNode(someNode));
-            for (Csar to : graph.getAllNodesThatRequireSomeCapabilityOf(someNode)) {
-                graph.removeEdge(someNode, to);
-                if (graph.hasNoIncomingEdges(to)) {
-                    nodesWithNoRequirements.add(to);
+            for (Csar edgeDestination : graph.getAllNodesThatRequireSomeCapabilityOf(someNode)) {
+                graph.removeEdge(someNode, edgeDestination);
+                if (graph.hasNoIncomingEdges(edgeDestination)) {
+                    nodesWithNoRequirements.add(edgeDestination);
                 }
             }
         }
