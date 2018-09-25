@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
+    <title>CSAR-Composer</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
@@ -86,17 +87,9 @@
                     </a>
                 </div>
             </div>
+            <a href="/start-provisioning" class="btn btn-primary btn-block">Run</a>
         </div>
 
     </div>
-
-    <div class="row">
-        <div class="col-md-4 col-md-offset-1"></div>
-        <div class="col-md-1"></div>
-        <div class="col-md-4">
-            <a href="/start-provisioning" class="btn btn-primary pull-right">Run</a>
-        </div>
-    </div>
-
 </body>
 </html>

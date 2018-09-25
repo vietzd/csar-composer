@@ -24,9 +24,4 @@ public class ProvisioningController {
         provisioningService.startProvisioning(populationService.getAllInternalCsars());
         return mv;
     }
-
-//    @GetMapping("/api/internal-csars/{sourceId}/status")
-//    public String getStatus(@PathVariable final String sourceId) {
-//        return provisioningService.getStatusOf(sourceId);
-//    }
 }
