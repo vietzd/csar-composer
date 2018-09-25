@@ -192,4 +192,18 @@ public class FilterService {
     public CSAR getSourceCsar(int i) {
         return sourceRepository.get(i);
     }
+
+    public List<Requirement> getOpenRequirements(List<CSAR> internalRepository) {
+        List<Requirement> result = new ArrayList<>();
+        List<Requirement> usedRequirements = new ArrayList<>();
+        List<QName> usedCapabilities = new ArrayList<>();
+        internalRepository.forEach(internalCsar -> usedRequirements.addAll(internalCsar.getRequirements()));
+        internalRepository.forEach(internalCsar -> usedCapabilities.addAll(internalCsar.getCapabilities()));
+        for (Requirement req : usedRequirements) {
+            if (!usedCapabilities.contains(req.getRequiredCapabilityType())) {
+                result.add(req);
+            }
+        }
+        return result;
+    }
 }

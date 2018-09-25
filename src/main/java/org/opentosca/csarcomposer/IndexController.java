@@ -21,6 +21,7 @@ public class IndexController {
         mv.addObject("activeSourceCsars", filterService.getCompatibleSourceCsars());
         mv.addObject("inactiveSourceCsars", filterService.getIncompatibleSourceCsars());
         mv.addObject("internalCsars", populationService.getAllInternalCsars());
+        mv.addObject("openRequirements", filterService.getOpenRequirements(populationService.getAllInternalCsars()));
         return mv;
     }
 }

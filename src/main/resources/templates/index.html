@@ -87,9 +87,16 @@
                     </a>
                 </div>
             </div>
-            <a href="/start-provisioning" class="btn btn-primary btn-block">Run</a>
+            <div th:each="openRequirement : ${openRequirements}">
+                <div class="alert alert-danger" role="alert">
+                    <span>Missing Capability: </span>
+                    <span th:text="${openRequirement.getRequiredCapabilityType().getLocalPart()}"></span>
+                </div>
+            </div>
+            <div th:if="${openRequirements.isEmpty()}">
+                <a href="/start-provisioning" class="btn btn-primary btn-block">Run</a>
+            </div>
         </div>
-
     </div>
 </body>
 </html>
