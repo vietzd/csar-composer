@@ -7,7 +7,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.opentosca.csarcomposer.model.Csar;
+import org.opentosca.csarcomposer.model.CSAR;
 import org.opentosca.csarcomposer.model.Requirement;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 @Service
 public class FilterService {
 
-    private List<Csar> sourceRepository = new ArrayList<>();
+    private List<CSAR> sourceRepository = new ArrayList<>();
     private Map<QName, Requirement> mapOfAllRequirements;
-    private Predicate<? super Csar> filter;
+    private Predicate<? super CSAR> filter;
 
     public FilterService() {
         IRepository repo = RepositoryFactory.getRepository();
@@ -33,19 +33,19 @@ public class FilterService {
             List<QName> resultCapabilities = listOfCapabilities(tServiceTemplate);
             List<Requirement> resultRequirements = listOfRequirements(tServiceTemplate);
 
-            Csar csar = new Csar(serviceTemplateId, resultCapabilities, resultRequirements);
+            CSAR csar = new CSAR(serviceTemplateId, resultCapabilities, resultRequirements);
             System.out.println("Added " + csar);
             sourceRepository.add(csar);
         }
     }
 
-    private Predicate<? super Csar> createFilter(List<Csar> internalRepository) {
+    private Predicate<? super CSAR> createFilter(List<CSAR> internalRepository) {
         List<Requirement> usedRequirements = new ArrayList<>();
         List<QName> usedCapabilities = new ArrayList<>();
         internalRepository.forEach(internalCsar -> usedRequirements.addAll(internalCsar.getRequirements()));
         internalRepository.forEach(internalCsar -> usedCapabilities.addAll(internalCsar.getCapabilities()));
 
-        return (Predicate<Csar>) csar -> {
+        return (Predicate<CSAR>) csar -> {
 
             // Don't allow any capability twice
             for (QName usedCapability : usedCapabilities) {
@@ -165,11 +165,11 @@ public class FilterService {
         return mapOfAllRequirements;
     }
 
-    public List<Csar> getAllSourceCsars() {
+    public List<CSAR> getAllSourceCsars() {
         return sourceRepository;
     }
 
-    public List<Csar> getCompatibleSourceCsars() {
+    public List<CSAR> getCompatibleSourceCsars() {
         if (filter == null) {
             return sourceRepository;
         } else {
@@ -177,7 +177,7 @@ public class FilterService {
         }
     }
 
-    public List<Csar> getIncompatibleSourceCsars() {
+    public List<CSAR> getIncompatibleSourceCsars() {
         if (filter == null) {
             return null;
         } else {
@@ -185,11 +185,11 @@ public class FilterService {
         }
     }
 
-    public void updateFilter(List<Csar> internalRepository) {
+    public void updateFilter(List<CSAR> internalRepository) {
         this.filter = createFilter(internalRepository);
     }
 
-    public Csar getSourceCsar(int i) {
+    public CSAR getSourceCsar(int i) {
         return sourceRepository.get(i);
     }
 }

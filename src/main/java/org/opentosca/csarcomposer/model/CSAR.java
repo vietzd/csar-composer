@@ -6,7 +6,7 @@ import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Csar {
+public class CSAR {
 
     private static int ID = 0;
 
@@ -15,14 +15,14 @@ public class Csar {
     private List<QName> capabilities;
     private List<Requirement> requirements;
 
-    public Csar(ServiceTemplateId serviceTemplateId, List<QName> capabilities, List<Requirement> requirements) {
+    public CSAR(ServiceTemplateId serviceTemplateId, List<QName> capabilities, List<Requirement> requirements) {
         this.id = ID++;
         this.serviceTemplateId = serviceTemplateId;
         this.capabilities = capabilities;
         this.requirements = requirements;
     }
 
-    public Csar(Csar csar) {
+    public CSAR(CSAR csar) {
         this.id = csar.id;
         this.serviceTemplateId = csar.serviceTemplateId;
         this.capabilities = new ArrayList<>();
@@ -65,7 +65,7 @@ public class Csar {
 
     @Override
     public String toString() {
-        return "Csar{" +
+        return "CSAR{" +
                 "id=" + id +
                 ", capabilities=" + capabilities +
                 ", requirements=" + requirements +

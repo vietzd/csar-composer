@@ -6,8 +6,7 @@ import com.sun.jersey.api.client.WebResource;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.opentosca.csarcomposer.model.Csar;
+import org.opentosca.csarcomposer.model.CSAR;
 import org.opentosca.csarcomposer.model.Requirement;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +23,8 @@ class ProvisioningService {
     private InstanceCreationService instanceCreationService = new InstanceCreationService();
     private Map<QName, List<JSONArray>> availableParams = new HashMap<>();
 
-    void startProvisioning(List<Csar> allInternalCsars) {
-        List<Csar> onboardingCsars = generateOnboardingCsars(allInternalCsars);
+    void startProvisioning(List<CSAR> allInternalCsars) {
+        List<CSAR> onboardingCsars = generateOnboardingCsars(allInternalCsars);
 
         List<File> exportedCsars = csarExportingService.exportCsarsToFile(onboardingCsars);
 
@@ -34,15 +33,15 @@ class ProvisioningService {
         createInstancesFor(onboardingCsars);
     }
 
-    private void createInstancesFor(List<Csar> csars) {
-        for (Csar csar : csars) {
+    private void createInstancesFor(List<CSAR> csars) {
+        for (CSAR csar : csars) {
             instanceCreationService.createServiceInstance(csar, getRequiredParameter(csar));
             waitUntilCreated(csar);
             addOutputParameterToAvailableParams(csar);
         }
     }
 
-    private void addOutputParameterToAvailableParams(Csar csar) {
+    private void addOutputParameterToAvailableParams(CSAR csar) {
         for (QName capability : csar.getCapabilities()) {
             if (availableParams.get(capability) == null) {
                 List<JSONArray> jsonArrayList = new ArrayList<>();
@@ -52,9 +51,9 @@ class ProvisioningService {
         }
     }
 
-    private List<Csar> generateOnboardingCsars(List<Csar> allInternalCsars) {
-        List<Csar> result = new ArrayList<>();
-        for (Csar csar : allInternalCsars) {
+    private List<CSAR> generateOnboardingCsars(List<CSAR> allInternalCsars) {
+        List<CSAR> result = new ArrayList<>();
+        for (CSAR csar : allInternalCsars) {
             if (getInstancesOf(csar).length() == 0) {
                 result.add(csar);
             } else {
@@ -65,7 +64,7 @@ class ProvisioningService {
         return result;
     }
 
-    private JSONArray getInstancesOf(Csar csar) {
+    private JSONArray getInstancesOf(CSAR csar) {
         String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
         String url = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
                 "%257Bhttp%253A%252F%252Fopentosca.org%252Fservicetemplates%257D" + csarName + "/instances/";
@@ -84,7 +83,7 @@ class ProvisioningService {
         }
     }
 
-    private List<JSONArray> getRequiredParameter(Csar csar) {
+    private List<JSONArray> getRequiredParameter(CSAR csar) {
         List<JSONArray> result = new ArrayList<>();
         for (Requirement requirement : csar.getRequirements()) {
             List<JSONArray> strings = availableParams.get(requirement.getRequiredCapabilityType());
@@ -95,7 +94,7 @@ class ProvisioningService {
         return result;
     }
 
-    private void waitUntilCreated(Csar csar) {
+    private void waitUntilCreated(CSAR csar) {
         int counter = 0;
         while (!getStatusOf(csar).equals("CREATED")) {
             try {
@@ -111,7 +110,7 @@ class ProvisioningService {
         }
     }
 
-    private String getStatusOf(Csar csar) {
+    private String getStatusOf(CSAR csar) {
         String result = "";
 
         JSONArray instances = getInstancesOf(csar);
@@ -128,7 +127,7 @@ class ProvisioningService {
         return result;
     }
 
-    private JSONArray getOutputParameter(Csar csar) {
+    private JSONArray getOutputParameter(CSAR csar) {
         JSONArray result;
         String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
         String url = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +

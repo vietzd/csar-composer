@@ -4,7 +4,7 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.jvnet.hk2.annotations.Service;
-import org.opentosca.csarcomposer.model.Csar;
+import org.opentosca.csarcomposer.model.CSAR;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 class CsarExportingService {
 
-    List<File> exportCsarsToFile(List<Csar> csars) {
+    List<File> exportCsarsToFile(List<CSAR> csars) {
         System.out.println("Export CSARs: " + csars);
         try {
             return exportCsarsToFileEx(csars);
@@ -29,9 +29,9 @@ class CsarExportingService {
         }
     }
 
-    private List<File> exportCsarsToFileEx(List<Csar> csars) throws IOException {
+    private List<File> exportCsarsToFileEx(List<CSAR> csars) throws IOException {
         List<File> result = new ArrayList<>();
-        for (Csar csar : csars) {
+        for (CSAR csar : csars) {
 
             CsarExporter csarExporter = new CsarExporter();
 

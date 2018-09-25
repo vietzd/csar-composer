@@ -1,6 +1,6 @@
 package org.opentosca.csarcomposer.sorting;
 
-import org.opentosca.csarcomposer.model.Csar;
+import org.opentosca.csarcomposer.model.CSAR;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,17 +11,17 @@ public class SortingService {
 
     private Graph graph;
 
-    public List<Csar> sort(List<Csar> internalRepository) {
+    public List<CSAR> sort(List<CSAR> internalRepository) {
 
         graph = new Graph(internalRepository);
 
-        List<Csar> result = new ArrayList<>(kahn());
+        List<CSAR> result = new ArrayList<>(kahn());
 
 
         if (!graph.getAllNodesWithOpenRequirements().isEmpty()) {
-            List<Csar> nodesWithOpenRequirements = graph.getAllNodesWithOpenRequirements();
+            List<CSAR> nodesWithOpenRequirements = graph.getAllNodesWithOpenRequirements();
             while (!nodesWithOpenRequirements.isEmpty()) {
-                Csar someNode = nodesWithOpenRequirements.get(0);
+                CSAR someNode = nodesWithOpenRequirements.get(0);
                 graph.removeAllRequirementsOf(someNode);
                 result.addAll(kahn());
                 nodesWithOpenRequirements = graph.getAllNodesWithOpenRequirements();
@@ -31,15 +31,15 @@ public class SortingService {
         return result;
     }
 
-    private List<Csar> kahn() {
-        List<Csar> result = new ArrayList<>();
-        List<Csar> nodesWithNoRequirements = graph.getAllNodesWithNoRequirements();
+    private List<CSAR> kahn() {
+        List<CSAR> result = new ArrayList<>();
+        List<CSAR> nodesWithNoRequirements = graph.getAllNodesWithNoRequirements();
         while (!nodesWithNoRequirements.isEmpty()) {
-            Csar someNode = nodesWithNoRequirements.get(0);
+            CSAR someNode = nodesWithNoRequirements.get(0);
             graph.removeNode(someNode);
             nodesWithNoRequirements.remove(0);
             result.add(graph.getOriginalNode(someNode));
-            for (Csar edgeDestination : graph.getAllNodesThatRequireSomeCapabilityOf(someNode)) {
+            for (CSAR edgeDestination : graph.getAllNodesThatRequireSomeCapabilityOf(someNode)) {
                 graph.removeEdge(someNode, edgeDestination);
                 if (graph.hasNoIncomingEdges(edgeDestination)) {
                     nodesWithNoRequirements.add(edgeDestination);

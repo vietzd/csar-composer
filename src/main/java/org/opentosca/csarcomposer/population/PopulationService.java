@@ -1,13 +1,11 @@
 package org.opentosca.csarcomposer.population;
 
 import org.opentosca.csarcomposer.filter.FilterService;
-import org.opentosca.csarcomposer.model.Csar;
-import org.opentosca.csarcomposer.model.Requirement;
+import org.opentosca.csarcomposer.model.CSAR;
 import org.opentosca.csarcomposer.sorting.SortingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.xml.namespace.QName;
 import java.util.*;
 
 @Service
@@ -18,10 +16,10 @@ public class PopulationService {
     @Autowired
     FilterService filterService;
 
-    private List<Csar> internalRepository = new ArrayList<>();
+    private List<CSAR> internalRepository = new ArrayList<>();
 
 
-    public List<Csar> getAllInternalCsars() {
+    public List<CSAR> getAllInternalCsars() {
         return internalRepository;
     }
 
@@ -37,7 +35,7 @@ public class PopulationService {
         filterService.updateFilter(internalRepository);
     }
 
-    public Csar findInternalCsar(String id) {
+    public CSAR findInternalCsar(String id) {
         // TODO
         return internalRepository.get(0);
     }

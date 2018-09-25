@@ -8,14 +8,14 @@ import com.sun.jersey.json.impl.provider.entity.JSONArrayProvider;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.opentosca.csarcomposer.model.Csar;
+import org.opentosca.csarcomposer.model.CSAR;
 
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 class InstanceCreationService {
 
-    void createServiceInstance(Csar csar, List<JSONArray> availableParams) {
+    void createServiceInstance(CSAR csar, List<JSONArray> availableParams) {
         String csarName = csar.getServiceTemplateId().getQName().getLocalPart();
         String mainServiceTemplateInstancesUrl = "http://localhost:1337/csars/" + csarName + ".csar/servicetemplates/" +
                 "%257Bhttp%253A%252F%252Fopentosca.org%252Fservicetemplates%257D" + csarName + "/buildplans/" + csarName +
